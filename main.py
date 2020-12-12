@@ -48,7 +48,7 @@ class Spot:
         return self.color == GREEN
 
     # checks if it is an obstacle
-    def is_obstacle(self):
+    def is_barrier(self):
         return self.color == BLACK
 
     # checking the beginning
@@ -57,8 +57,36 @@ class Spot:
 
     # final block
     def is_end(self):
-        return self.color == PURPLE
+        return self.color == TURQUOISE
 
     # resets all the blocks to white
     def reset(self):
         return self.color == WHITE
+
+    # --- M A K E --- #
+    # make changes the color instead of giving back colors, it changes them
+    def make_closed(self):
+        self.col = RED
+
+    def make_open(self):
+        self.color = GREEN
+
+    def make_is_barrier(self):
+        self.color = BLACK
+
+    def make_end(self):
+        self.color = TURQUOISE
+
+    def make_path(self):
+        self.color = PURPLE
+
+    # what we call when we want to draw the method on the screen
+    def draw(self, win):
+        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
+
+    def update_neighbors(self, grid):
+        pass
+
+    # this compares two Spots together, and in this case, it always says that the other spot is greater than this spot
+    def __lt__(self, other):
+        return False
