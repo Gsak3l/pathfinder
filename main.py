@@ -1,4 +1,6 @@
 # pip3 install pygame
+# import os  # hide the message from pygame
+# os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import math
 from queue import PriorityQueue
@@ -71,7 +73,10 @@ class Spot:
     def make_open(self):
         self.color = GREEN
 
-    def make_is_barrier(self):
+    def make_start(self):
+        self.color = ORANGE
+
+    def make_barrier(self):
         self.color = BLACK
 
     def make_end(self):
@@ -141,3 +146,50 @@ def get_clicked_pos(pos, rows, width):
     row = y // gap
     col = x // gap
     return row, col
+
+
+# this is the manager for everything that is happening
+def main(win, width):
+    rows = 50
+    grid = make_grid(rows, width)
+
+    start = None
+    end = None
+
+    run = True
+    started = False
+
+    # checking all the events that happened, when the algorithm started (timers, keyboard things etc)
+    while run:
+        draw(win, grid, rows, width)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:  # x button
+                run = False
+
+            # this blocks the user from doing stuff when the algorithm has already started
+            if started:
+                continue
+
+            if pygame.mouse.get_pressed()[0]:  # left
+                pos = pygame.mouse.get_pos()
+                row, col = get_clicked_pos(pos, rows, width)
+                spot = grid[row][col]
+                # if start hasn't been defined yet
+                if not start:
+                    start = spot
+                    start.make_start()
+
+                elif not end:
+                    end = spot
+                    end.make_end()
+
+                elif spot != end and spot != start:
+                    spot.make_barrier()
+
+            elif pygame.mouse.get_pressed()[2]:  # right
+                pass
+
+    pygame.quit()
+
+
+main(WIN, WIDTH)
