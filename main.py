@@ -109,3 +109,35 @@ def make_grid(rows, width):
             spot = Spot(i, j, gap, rows)
             grid[i].append(spot)
     return grid
+
+
+# drawing the grid to the white cubes
+def draw_grid(win, rows, width):
+    gap = width // rows
+    for i in range(rows):
+        # drawing horizontal lines, starting with the 0, gap and ending at 800, gap in this specific case
+        pygame.draw.line(win, GREY, (0, i * gap), (width, i * gap))
+        for j in range(rows):
+            # flipping the first draw
+            pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
+
+
+# this draws everything
+def draw(win, grid, rows, width):
+    win.fill(WHITE)
+    for row in grid:
+        for spot in row:
+            spot.draw(win)
+    draw_grid(win, rows, width)
+    pygame.display.update()
+
+
+# gets where the position of the block clicked is, on the grid
+# this helps us understand what color the block should be
+def get_clicked_pos(pos, rows, width):
+    gap = width // rows
+    y, x = pos
+
+    row = y // gap
+    col = x // gap
+    return row, col
