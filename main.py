@@ -90,3 +90,22 @@ class Spot:
     # this compares two Spots together, and in this case, it always says that the other spot is greater than this spot
     def __lt__(self, other):
         return False
+
+
+# p1 p2 should be like x and y or row and col
+def h(p1, p2):
+    x1, y1 = p1
+    x2, y2 = p2
+    return abs(x1 - x2) + abs(y1 - y2)
+
+
+# creating the grid
+def make_grid(rows, width):
+    grid = []
+    gap = width // rows  # integer division
+    for i in range(rows):
+        grid.append([])
+        for j in range(rows):
+            spot = Spot(i, j, gap, rows)
+            grid[i].append(spot)
+    return grid
