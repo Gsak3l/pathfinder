@@ -63,7 +63,7 @@ class Spot:
 
     # resets all the blocks to white
     def reset(self):
-        return self.color == WHITE
+        self.color = WHITE
 
     # --- M A K E --- #
     # make changes the color instead of giving back colors, it changes them
@@ -90,7 +90,19 @@ class Spot:
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
 
     def update_neighbors(self, grid):
-        pass
+        self.neighbors = []
+        # this means if we can move up, down, left, right, copied all of these
+        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_barrier():  # UP
+            self.neighbors.append(grid[self.row + 1][self.col])
+
+        if self.row > 0 and not grid[self.row + 1][self.col].is_barrier():  # DOWN
+            self.neighbors.append(grid[self.row - 1][self.col])
+
+        if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].is_barrier():  # RIGHT
+            self.neighbors.append(grid[self.row][self.col + 1])
+
+        if self.col > 0 and not grid[self.row][self.col - 1].is_barrier():  # LEFT
+            self.neighbors.append(grid[self.row][self.col - 1])
 
     # this compares two Spots together, and in this case, it always says that the other spot is greater than this spot
     def __lt__(self, other):
@@ -198,7 +210,13 @@ def main(win, width):
                 elif spot == end:
                     end = None
 
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and not started:
+                    pass
+
     pygame.quit()
 
 
 main(WIN, WIDTH)
+
+# why is there an emoji shortcut on intelliJ ??? 🤔🤔🤔 CTRL + ALT + the button right to L button :
