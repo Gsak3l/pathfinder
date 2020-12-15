@@ -110,10 +110,55 @@ class Spot:
 
 
 # p1 p2 should be like x and y or row and col
-def h(p1, p2):
+def heuristic(p1, p2):
     x1, y1 = p1
     x2, y2 = p2
     return abs(x1 - x2) + abs(y1 - y2)
+
+
+# this does everything
+def algorithm(draw, grid, start, end):
+    count = 0
+    open_set = PriorityQueue()
+    open_set.put((0, count, start))
+    came_from = {}  # from what node this node came from
+    g_score = {spot: float("inf") for row in grid for spot in row}
+    g_score[start] = 0
+    f_score = {spot: float("inf") for row in grid for spot in row}
+    g_score[start] = heuristic(start.get_position(), end.get_pos())
+
+    open_set_hash = {start}
+
+    # if this is empty, that means that the bot hasn't found a way to the destination
+    while not open_set.empty():
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        current = open_set.get()[2]  # i want just the node
+        open_set_hash.remove(current)
+
+        if current == end:
+            return True
+
+        # checking all the neighbors for the current node
+        for neighbor in current.neighbors:
+            temp_g_score = g_score[current] + 1
+
+            if temp_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = temp_g_score
+                f_score[neighbor] = temp_g_score + heuristic(neighbor.get_pos(), end.get_pos())
+                if neighbor not in open_set_hash:
+                    count += 1
+                    open_set.put((f_score[neighbor], count, neighbor))
+                    open_set_hash.add(neighbor)
+                    neighbor.make_open()
+
+        draw()
+
+        if current != start:
+            current.make_closed()
 
 
 # creating the grid
@@ -210,9 +255,14 @@ def main(win, width):
                 elif spot == end:
                     end = None
 
+            # whenever pressing the space button, and if the program hasn't started yet, update all the neighbors
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and not started:
-                    pass
+                    for row in grid:
+                        for spot in row:
+                            spot.update_neighbors()
+
+                        algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
 
     pygame.quit()
 
