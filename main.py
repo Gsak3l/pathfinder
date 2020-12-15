@@ -92,10 +92,10 @@ class Spot:
     def update_neighbors(self, grid):
         self.neighbors = []
         # this means if we can move up, down, left, right, copied all of these
-        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_barrier():  # UP
+        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_barrier():  # DOWN
             self.neighbors.append(grid[self.row + 1][self.col])
 
-        if self.row > 0 and not grid[self.row + 1][self.col].is_barrier():  # DOWN
+        if self.row > 0 and not grid[self.row - 1][self.col].is_barrier():  # UP
             self.neighbors.append(grid[self.row - 1][self.col])
 
         if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].is_barrier():  # RIGHT
@@ -125,7 +125,7 @@ def algorithm(draw, grid, start, end):
     g_score = {spot: float("inf") for row in grid for spot in row}
     g_score[start] = 0
     f_score = {spot: float("inf") for row in grid for spot in row}
-    g_score[start] = heuristic(start.get_position(), end.get_pos())
+    g_score[start] = heuristic(start.get_pos(), end.get_pos())
 
     open_set_hash = {start}
 
@@ -139,6 +139,7 @@ def algorithm(draw, grid, start, end):
         open_set_hash.remove(current)
 
         if current == end:
+            reconstruct_path(came_from, end, draw)
             return True
 
         # checking all the neighbors for the current node
@@ -260,9 +261,9 @@ def main(win, width):
                 if event.key == pygame.K_SPACE and not started:
                     for row in grid:
                         for spot in row:
-                            spot.update_neighbors()
+                            spot.update_neighbors(grid)
 
-                        algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
+                    algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
 
     pygame.quit()
 
