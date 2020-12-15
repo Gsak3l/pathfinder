@@ -116,6 +116,14 @@ def heuristic(p1, p2):
     return abs(x1 - x2) + abs(y1 - y2)
 
 
+# drawing the best path after finding it
+def reconstruct_path(came_from, current, draw):
+    while current in came_from:
+        current = came_from[current]
+        current.make_path()
+        draw()
+
+
 # this does everything
 def algorithm(draw, grid, start, end):
     count = 0
@@ -140,6 +148,7 @@ def algorithm(draw, grid, start, end):
 
         if current == end:
             reconstruct_path(came_from, end, draw)
+            end.make_end()
             return True
 
         # checking all the neighbors for the current node
@@ -224,10 +233,6 @@ def main(win, width):
             if event.type == pygame.QUIT:  # x button
                 run = False
 
-            # this blocks the user from doing stuff when the algorithm has already started
-            if started:
-                continue
-
             if pygame.mouse.get_pressed()[0]:  # left
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, rows, width)
@@ -258,16 +263,27 @@ def main(win, width):
 
             # whenever pressing the space button, and if the program hasn't started yet, update all the neighbors
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and not started:
+                if event.key == pygame.K_SPACE and start and end:
                     for row in grid:
                         for spot in row:
                             spot.update_neighbors(grid)
 
                     algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
 
+                if event.key == pygame.K_c:
+                    start = None
+                    end = None
+                    grid = make_grid(rows, width)
+
     pygame.quit()
 
 
+print('how this works:'
+      '\n   1) left click somewhere on the screen for the start node'
+      '\n   2) left click somewhere on the screen for the end node'
+      '\n   3) add walls by left clicking'
+      '\n   4) press space for the algorithm to start'
+      '\nto remove something, right click the block you wish to be removed')
 main(WIN, WIDTH)
 
 # why is there an emoji shortcut on intelliJ ??? 🤔🤔🤔 CTRL + ALT + the button right to L button :
