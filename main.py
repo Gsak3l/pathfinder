@@ -8,7 +8,7 @@ from queue import PriorityQueue
 # displaying the window with an 800x800 resolution and a caption
 WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
-pygame.display.set_caption("A* Path Finding Algorithm")
+pygame.display.set_caption("Hello There")
 
 # colors
 RED = (220, 20, 60)
@@ -283,7 +283,9 @@ print('how this works:'
       '\n   2) left click somewhere on the screen for the end node'
       '\n   3) add walls by left clicking'
       '\n   4) press space for the algorithm to start'
-      '\nto remove something, right click the block you wish to be removed')
+      '\nto remove something, right click the block you wish to be removed'
+      '\npress c to reset the game')
 main(WIN, WIDTH)
+# improvements
 
 # why is there an emoji shortcut on intelliJ ??? 🤔🤔🤔 CTRL + ALT + the button right to L button :
